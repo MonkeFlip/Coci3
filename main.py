@@ -31,7 +31,20 @@ plt.bar(discrete_x_points, discrete_y_points,
 plt.show()
 
 ###################################################
-def DWT(array):
+def fwht(a) -> None:
+    """In-place Fast Walsh–Hadamard Transform of array a."""
+    h = 1
+    while h < len(a):
+        for i in range(0, len(a), h * 2):
+            for j in range(i, i + h):
+                x = a[j]
+                y = a[j + h]
+                a[j] = x + y
+                a[j + h] = x - y
+        h *= 2
+    return a
+
+def WFT(array):
     if (len(array) == 1):
         return array
     left_subarray = [0] * (int)(len(array) / 2)
@@ -41,14 +54,48 @@ def DWT(array):
         left_subarray[i] = array[i] + array[i + (int)(len(array) / 2)]
         right_subarray[i] = array[i] - array[i + (int)(len(array) / 2)]
         i += 1
-    a = DWT(left_subarray)
-    b = DWT(right_subarray)
+    left_subarray = WFT(left_subarray)
+    right_subarray = WFT(right_subarray)
     result = [0] * len(array)
     i = 0
     while i < len(array) / 2:
-        result[i] = a[i]
-        result[i + (int)(len(array) / 2)] = b[i]
+        result[i] = left_subarray[i]
+        result[i + (int)(len(array) / 2)] = right_subarray[i]
         i += 1
+    return result
 
 ##################
-DWT(discrete_y_points)
+x_result = range(0, N)
+#y_result = WFT(discrete_y_points)
+y_result = fwht(discrete_y_points)
+i = 0
+while i < len(y_result):
+    y_result[i] /= N
+    i += 1
+######График амплитуд
+m = 0
+amp_result = [0] * N
+while m < len(y_result):
+    amp_result[m] = abs(y_result[m])
+    m += 1
+
+plt.grid(True)
+plt.title("График амплитуды ДПФ")
+plt.bar(x_result, amp_result,
+        width=0.1, color='blue', alpha=0.7,
+        zorder=2)
+plt.show()
+
+####График фазы
+m = 0
+phase_result = [0] * N
+while m < len(y_result):
+    phase_result[m] = y_result[m].imag
+    m += 1
+
+plt.grid(True)
+plt.title("График фазы ДПФ")
+plt.bar(x_result, phase_result,
+        width=0.1, color='blue', alpha=0.7,
+        zorder=2)
+plt.show()
