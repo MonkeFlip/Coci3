@@ -66,8 +66,7 @@ def WFT(array):
 
 ##################
 x_result = range(0, N)
-#y_result = WFT(discrete_y_points)
-y_result = fwht(discrete_y_points)
+y_result = WFT(discrete_y_points)
 i = 0
 while i < len(y_result):
     y_result[i] /= N
@@ -80,22 +79,39 @@ while m < len(y_result):
     m += 1
 
 plt.grid(True)
-plt.title("График амплитуды ДПФ")
+plt.title("График амплитуды БПУ")
+plt.bar(x_result, amp_result,
+        width=0.1, color='blue', alpha=0.7,
+        zorder=2)
+plt.show()
+
+##################
+x_result = range(0, N)
+y_result = fwht(discrete_y_points)
+######График амплитуд by python
+m = 0
+amp_result = [0] * N
+while m < len(y_result):
+    amp_result[m] = abs(y_result[m])
+    m += 1
+
+plt.grid(True)
+plt.title("График амплитуды БПУ by python")
 plt.bar(x_result, amp_result,
         width=0.1, color='blue', alpha=0.7,
         zorder=2)
 plt.show()
 
 ####График фазы
-m = 0
-phase_result = [0] * N
-while m < len(y_result):
-    phase_result[m] = y_result[m].imag
-    m += 1
-
-plt.grid(True)
-plt.title("График фазы ДПФ")
-plt.bar(x_result, phase_result,
-        width=0.1, color='blue', alpha=0.7,
-        zorder=2)
-plt.show()
+# m = 0
+# phase_result = [0] * N
+# while m < len(y_result):
+#     phase_result[m] = y_result[m].imag
+#     m += 1
+#
+# plt.grid(True)
+# plt.title("График фазы ДПФ")
+# plt.bar(x_result, phase_result,
+#         width=0.1, color='blue', alpha=0.7,
+#         zorder=2)
+# plt.show()
