@@ -143,7 +143,7 @@ def reverse_WFT(array):
 #ДПУ
 y_result = DWT(discrete_y_points)
 plt.grid(True)
-plt.title("График амплитуды ДПУ")
+plt.title("График ДПУ")
 plt.plot(x_result, y_result)
 plt.show()
 
@@ -157,7 +157,7 @@ plt.show()
 #ДПУ_by python
 y_result = wht_python(discrete_y_points)[0]
 plt.grid(True)
-plt.title("График амплитуды ДПУ by python")
+plt.title("График ДПУ by python")
 plt.plot(x_result, y_result)
 plt.show()
 
@@ -177,7 +177,7 @@ y_result = WFT(discrete_y_points)
 ######График амплитуд
 
 plt.grid(True)
-plt.title("График амплитуды БПУ")
+plt.title("График БПУ")
 plt.plot(x_result, y_result)
 plt.show()
 
