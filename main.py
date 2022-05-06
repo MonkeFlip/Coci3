@@ -26,67 +26,36 @@ plt.title("График исходной функции")
 plt.plot(discrete_x_points, discrete_y_points)
 plt.show()
 
-###################################################
-# def fwht(a) -> None:
-#     """In-place Fast Walsh–Hadamard Transform of array a."""
-#     h = 1
-#     while h < len(a):
-#         for i in range(0, len(a), h * 2):
-#             for j in range(i, i + h):
-#                 x = a[j]
-#                 y = a[j + h]
-#                 a[j] = x + y
-#                 a[j + h] = x - y
-#         h *= 2
-#     return a
-
-def wht_python(x):
-    # Function computes (slow) Discrete Walsh-Hadamard Transform
-    # for any 1D real-valued signal
-    # (c) 2015 QuantAtRisk.com, by Pawel Lachowicz
-    x = np.array(x)
-    if (len(x.shape) < 2):  # make sure x is 1D array
-        if (len(x) > 3):  # accept x of min length of 4 elements (M=2)
-            # check length of signal, adjust to 2**m
-            n = len(x)
-            M = math.trunc(math.log(n, 2))
-            x = x[0:2 ** M]
-            h2 = np.array([[1, 1], [1, -1]])
-            for i in range(M - 1):
-                if (i == 0):
-                    H = np.kron(h2, h2)
-                else:
-                    H = np.kron(H, h2)
-
-            return (np.dot(H, x) / 2. ** M, x, M)
-        else:
-            print("HWT(x): Array too short!")
-            raise SystemExit
-    else:
-        print("HWT(x): 1D array expected!")
-        raise SystemExit
 
 #радемахер
-def R(k, g ):
-    t = g / N
+def R(k, t):
+    t = t / N
     if math.sin((2**k)*math.pi*t) > 0:
         return 1
     return -1
 
 def WAL(n,t):
+    if n == 0:
+        return 1
     result = 1
-    r = 0
-    if n <= 16:
-        r = 4
-    if n <= 8:
-        r = 3
-    if n <= 4:
+    r = 1
+    if n >= 2:
         r = 2
-    if n <= 2:
-        r = 1
+    if n >= 4:
+        r = 3
+    if n >= 8:
+        r = 4
+    if n >= 16:
+        r = 5
     k = 1
     while k <= r:
-        degree = (n>>(k - 1) & 1) ^ (n>>(k) & 1)
+        bit1 = n>>(k - 1) & 1
+        if (r - k + 1) == 0:
+            bit1 = 0
+        bit2 = n>>(k) & 1
+        if (r - k) == 0:
+            bit2 = 0
+        degree = bit1 ^ bit2
         result *= (R(k, t) ** degree)
         k+=1
     return result
@@ -134,14 +103,18 @@ def WFT(array):
 def reverse_WFT(array):
     array = WFT(array)
     k = 0
-    while k< len(array):
-        array[k] /= len(array)
-        k+=1
+    # while k< len(array):
+    #     array[k] /= len(array)
+    #     k+=1
     return array
 
 ##################
 #ДПУ
 y_result = DWT(discrete_y_points)
+i = 0
+while i < len(y_result):
+    y_result[i] /= N
+    i += 1
 plt.grid(True)
 plt.title("График ДПУ")
 plt.plot(x_result, y_result)
@@ -154,26 +127,13 @@ plt.title("График обратного ДПУ")
 plt.plot(x_result, y_result)
 plt.show()
 
-#ДПУ_by python
-y_result = wht_python(discrete_y_points)[0]
-plt.grid(True)
-plt.title("График ДПУ by python")
-plt.plot(x_result, y_result)
-plt.show()
-
-#ДПУ_by python
-y_result = wht_python(y_result)[0]
-plt.grid(True)
-plt.title("Reverse DWT by python")
-plt.plot(x_result, y_result)
-plt.show()
 
 ####################
 y_result = WFT(discrete_y_points)
-# i = 0
-# while i < len(y_result):
-#     y_result[i] /= N
-#     i += 1
+i = 0
+while i < len(y_result):
+    y_result[i] /= N
+    i += 1
 ######График амплитуд
 
 plt.grid(True)
